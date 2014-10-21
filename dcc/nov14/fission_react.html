@@ -1,0 +1,139 @@
+<style>a{
+  color: #74daff !important;
+}
+.rounded{
+   border-radius: 0px !important;
+}
+
+</style><html lang="en" class="base present loaded"><head><meta charset="utf-8"/><meta name="author" content="Fractal"/><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="description" content="Real world React"/><title>Fission</title><link rel="stylesheet" href="lib/css/offline.css"/><link rel="stylesheet" href="lib/css/reveal.css"/><link rel="stylesheet" href="lib/css/animate.css"/><link rel="stylesheet" href="lib/main.css"/><!--if IEscript(src='http://html5shiv.googlecode.com/svn/trunk/html5.js')
+--></head><body class="reveal-viewport theme-font-opensans theme-color-black-mint main-content-body"><div class="reveal"><div class="slides"><script type="text/javascript">var img = new Image();
+img.src = 'assets/build_systems/field.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/build_systems/field.gif" class="slide"><div class="title-slide"><h1 class="big-title">Fission</h1><h3 class="big-title">Real world React</h3></div></section><section data-background-color="#171717" class="slide"><div class="plug-slide"><img src="assets/fission_react/me.png" class="plug-image rounded"/><br/><a href="https://twitter.com/SteveDeLacy">@SteveDeLacy</a><br/><a href="https://github.com/stevelacy">github.com/stevelacy</a><br/><a href="slacy.me">slacy.me</a><br/><br/><br/><h3>@wearefractal</h3><h1>Steve Lacy</h1><aside class="notes"><p>Im gonna talk about stuff</p></aside></div></section><section class="slide"><img src="assets/real_world_react/react.png"/><br/><br/><h3>React Is</h3><br/><ul><li>a frontend javascript library for building interfaces</li><li>a javascript render library</li></ul><br/><br/><br/><h3>React is Not</h3><br/><ul><li>an MVC framework</li></ul></section><section class="slide"><img src="assets/real_world_react/react.png"/><br/><br/><h3>React's benefits</h3><br/><ul><li>high cohesion, loose coupling</li><li>component system</li><li>virtual dom diff</li><li>1-way data flow</li></ul></section><section data-background-color="#555" class="slide"><h1>gotchas</h1></section><section class="slide"><h2>React JSX</h2><pre><code data-trim="true">render: function() {
+    return (
+      <div>
+        <h3>TODO</h3>
+        <TodoList items={this.state.items} />
+        <form onSubmit={this.handleSubmit}>
+          <input onChange={this.onChange} value={this.state.text} />
+          <button>{'Add #' + (this.state.items.length + 1)}</button>
+        </form>
+      </div>
+    );
+  }</code></pre></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/fission_react/kramer.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/fission_react/kramer.gif" class="slide"><h2>Templates in your code</h2></section><section class="slide"><iframe src="http://facebook.github.io/react/index.html#todoExample" width="100%" height="100%" border="none"></iframe></section><section class="slide"><img src="assets/real_world_react/react.png"/><br/><br/><h2>Virtual DOM differencing</h2><ul><li>Efficient rendering</li><li>Faster applications</li></ul></section><section class="slide"><img src="assets/fission_react/party.gif"/><br/><br/><h2>Wsome!</h2><br/><br/><h2>Let's build an app!</h2></section><section class="slide"><img src="assets/real_world_react/firefly.gif" width="100%"/><br/><br/><h1>You can't</h1></section><section class="slide"><h2>React is just a rendering library.</h2></section><section class="slide"><h2>Current React MVC frameworks:</h2></section><section class="slide"></section><section class="slide"><h1>Flux</h1><br/><h3><i>NOT a MVC</i></h3><p>'Flux is an alternative to the "M" and "C" in the MVC architecture'</p><a href="http://fluxxor.com/what-is-flux.html">http://fluxxor.com/what-is-flux.html</a></section><section class="slide"><h3>Flux diagram</h3><img src="assets/fission_react/flux-simple.png"/></section><section class="slide"><h3>Flux diagram</h3><img src="assets/fission_react/flux-simple-1.png"/></section><section class="slide"><h3>Flux diagram</h3><img src="assets/fission_react/flux-simple-2.png"/></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/real_world_react/trollface.jpg';
+console.log('preloading', img);
+</script><section data-background-image="assets/real_world_react/trollface.jpg" class="slide"><h3>Flux diagram</h3><img src="assets/fission_react/flux-simple-2.png"/></section><section class="slide"><h1>Flux</h1><ul><li>It is just Architecture, not a framework</li><li>You need to create your own 'Collection' (storage)</li><li>You need to create your own 'fetch' method (http requests to API)</li></ul></section><section class="slide"><h1>Flux</h1><a href="http://facebook.github.io/flux/docs/todo-list.html#the-future-of-flux">http://facebook.github.io/flux/docs/todo-list.html#the-future-of-flux</a><br/><br/><p>"Really, Flux is just an architecture, not a framework. But perhaps a Flux boilerplate project might make sense, if there is enough interest."</p></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/fission_react/napoleon.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/fission_react/napoleon.gif" class="slide"><h1>Now What?</h1><br/><br/><br/><h2>Build one!</h2></section><section class="slide"><ul><li>Models: Ampersandjs</li><li>Rendering: Reactjs</li><li>Routing: Pagejs</li></ul></section><section class="slide"><img src="assets/fission_react/fission-mix.png"/></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/fission_react/nuke.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/fission_react/nuke.gif" class="slide"><h1>Fission</h1><a href="http://github.com/fissionjs/fission">github.com/fissionjs/fission</a></section><section class="slide"><h2>Models</h2><pre><code data-trim="true">var Model = fission.model({
+
+  props: {
+    text: 'string',
+    done: 'boolean',
+    id: 'string'
+  },
+  url: '/v1/todos'
+});
+
+var model = new Model();
+
+model.text = 'Mr Fission';
+model.save();
+</code></pre></section><section class="slide"><h2>Router</h2><pre><code data-trim="true">var router = fission.router;
+var UserView = require('views/UserView');
+
+router.route('/user/:id',{
+  view: UserView,
+  el: 'content'
+});
+
+</code></pre></section><section class="slide"><h2>Model View</h2><pre><code data-trim="true">var User = require('../models/user');
+
+fission.modelView({
+  model: User,
+
+  render: function() {
+    var user = this.model.get('name');
+    return span({}, 'name: ' + user);
+  }
+});
+</code></pre></section><section class="slide"><h2>Collection view</h2><pre><code data-trim="true">var User = require('../models/User');
+
+var UserItem = fission.modelView({
+  model: User,
+  render: function(){
+    div({className: "match"},
+    img({src: this.model.get('content')
+    }));
+
+  }
+
+});
+
+fission.collectionView({
+  model: User,
+  itemView: UserItem,
+
+  render: function() {
+    if (this.items.length === 0) {
+      return span(null, 'No Users right now!');
+    }
+    return this.items;
+  }
+});
+</code></pre></section><section class="slide"><h1>Lets make an app!</h1></section><section class="slide"><h2>app.js</h2><pre><code data-trim="true">var Fission = require('fission');
+var fission = new Fission();
+module.exports = fission;</code></pre></section><section class="slide"><h2>router.js</h2><pre><code data-trim="true">var fission = require('./app');
+
+var IndexView = require('./views'); // ./views/index.js
+
+fission.router.route('/', {
+  title: 'Welcome',
+  view: IndexView,
+  el: 'content'
+});
+
+
+// Start the router
+fission.router.start();
+
+</code></pre></section><section class="slide"><h2>views/index.js</h2><pre><code data-trim="true">var fission = require('../app');
+
+var DOM = fission.React.DOM;
+
+module.exports = function() {
+  return fission.view({
+    init: function() {
+      return {
+        clicked: false
+      };
+    },
+
+    clickAction: function() {
+
+      this.setState({clicked: !this.state.clicked});
+    },
+
+    render: function() {
+
+      var headerText = this.state.clicked ? 'You clicked!' : 'Click me';
+      var Header = DOM.h1({}, headerText);
+
+      return DOM.div({
+        className: 'main',
+        onClick: this.clickAction
+      },
+        Header
+      );
+
+    }
+  });
+};
+</code></pre></section><section class="slide"><h2>Example repo<br/><br/><a href="https://github.com/fissionjs/examples/tree/master/simple/states">github.com/fissionjs/examples</a></h2></section><section class="slide"><h1>Fission</h1><h2><a href="http://github.com/fissionjs/fission">github.com/fissionjs/fission</a></h2></section></div></div><script type="text/javascript" src="lib/js/head.js"></script><script type="text/javascript" src="lib/js/reveal.js"></script><script type="text/javascript" src="lib/main.js"></script></body></html>

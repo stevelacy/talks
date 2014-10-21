@@ -1,0 +1,198 @@
+<style>a{
+  color: #74daff !important;
+}
+.rounded{
+   border-radius: 0px !important;
+}
+
+</style><html lang="en" class="base present loaded"><head><meta charset="utf-8"/><meta name="author" content="Fractal"/><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><meta name="description" content="with Node.js"/><title>Deploying Systems</title><link rel="stylesheet" href="lib/css/offline.css"/><link rel="stylesheet" href="lib/css/reveal.css"/><link rel="stylesheet" href="lib/css/animate.css"/><link rel="stylesheet" href="lib/main.css"/><!--if IEscript(src='http://html5shiv.googlecode.com/svn/trunk/html5.js')
+--></head><body class="reveal-viewport theme-font-opensans theme-color-black-mint main-content-body"><div class="reveal"><div class="slides"><script type="text/javascript">var img = new Image();
+img.src = 'assets/deploying_systems/lab.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/deploying_systems/lab.gif" class="slide"><div class="title-slide"><h1 class="big-title">Deploying Systems</h1><h3 class="big-title">with Node.js</h3><br/><br/><br/><h3><a>From code to user</a></h3><k></k></div></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/deploying_systems/summer.jpg';
+console.log('preloading', img);
+</script><section data-background-image="assets/deploying_systems/summer.jpg" class="slide"><img src="assets/deploying_systems/me.png"/><h2>@SteveDeLacy</h2><h2>github.com/stevelacy</h2><h2>slacy.me</h2><br/><h3>@wearefractal</h3><aside class="notes"><p>Im gonna talk about stuff</p></aside></section><section class="slide"><div class="todo-list"><div class="todo-header">What we will cover</div><ol><div class="fragment"><li>automating with gulp</li></div><div class="fragment"><li>dev / production</li></div><div class="fragment"><li>git deployment</li></div><div class="fragment"><li>git hooks</li></div><div class="fragment"><li>node git hooks</li></div><div class="fragment"><li>logging</li></div><div class="fragment"><li>reporting</li></div></ol></div></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/deploying_systems/fire-sky.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/deploying_systems/fire-sky.gif" class="slide"><h1>DevOps is Not fun!</h1></section><section class="slide"><h2>From code to User</h2></section><section class="slide"><iframe src="http://code.divshot.com/geo-bootstrap/" width="100%" height="100%" border="none"></iframe><a href="http://code.divshot.com/geo-bootstrap/">http://code.divshot.com/geo-bootstrap/</a></section><section class="slide"><iframe src="http://stevelacy.github.io/profile-app-views/" width="100%" height="100%" border="none"></iframe><a href="http://stevelacy.github.io/profile-app-views/">http://stevelacy.github.io/profile-app-views/</a></section><section class="slide"><h2>gulpfile.js</h2><pre><code data-trim="true">var es = require('ecstatic');
+var http = require('http');
+var gulp = require('gulp');
+var jade = require('gulp-jade');
+var stylus = require('gulp-stylus');
+var coffee = require('gulp-coffee');
+var reload = require('gulp-livereload');
+var prefix = require('gulp-autoprefixer');
+
+gulp.task('stylus', function() {
+  return gulp.src('./src/**/*.styl')
+    .pipe(stylus())
+    .pipe(prefix())
+    .pipe(gulp.dest('./public'))
+    .pipe(reload());
+});
+
+gulp.task('jade', function() {
+  gulp.src('./src/**/*.jade')
+    .pipe(jade())
+    .pipe(gulp.dest('./public'))
+    .pipe(reload());
+  return gulp.src('./index.jade')
+    .pipe(jade())
+    .pipe(gulp.dest('./'))
+    .pipe(reload());
+});
+
+gulp.task('coffee', function() {
+  return gulp.src('./src/**/*.coffee')
+    .pipe(coffee())
+    .pipe(gulp.dest('./public'))
+    .pipe(reload());
+});
+
+gulp.task('copy', function() {
+  return gulp.src(['./src/**/*', '!./src/**/*.jade', '!./src/**/*.styl', '!./src/**/*.coffee'])
+    .pipe(gulp.dest('./public'));
+});
+
+gulp.task('server', function(done) {
+  var port = 5000;
+  var server = http.createServer(es({
+    root: './'
+  }));
+  return server.listen(port, done);
+});
+
+gulp.task('watch', function() {
+  gulp.watch(['./src/**/*.styl'], ['stylus']);
+  gulp.watch(['./**/*.jade'], ['jade']);
+  gulp.watch(['./**/*.coffee'], ['coffee']);
+  return gulp.watch(['./src/*', '!./src/*.jade', '!./src/*.styl', '!./src/*.coffee'], ['copy']);
+});
+
+gulp.task('default', ['server', 'stylus', 'jade', 'coffee', 'copy', 'watch']);
+
+</code></pre><div class="fragment"><h2>git add</h2><h2>git commit -m 'stuff'</h2><h2>git push origin master</h2></div></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/deploying_systems/tape.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/deploying_systems/tape.gif" class="slide"><h2>Automate it!</h2><div class="fragment"><pre><code data-trim="true">var gulp = require('gulp');
+var git = require('gulp-git');
+
+// ... other tasks ...
+
+gulp.task('git', function(){
+  return gulp.src('.')
+    .pipe(git.add({args: '-A'}))
+    .pipe(git.commit('gulp-git'))
+    .on('end', function(){
+      git.push('origin', 'master', function(err){
+        if (err){
+          console.log(err);
+        }
+      });
+    });
+});
+
+gulp.task('default', ['git']);
+</code></pre></div></section><section class="slide"><h1>dev vs production</h1></section><section class="slide"><h2>dev:</h2><div class="fragment"><li>development branch</li><li>tests checked here</li><li>all changes are done here</li><li>all hotfixes are merged here</li><br/></div><div class="fragment"><h2>Deployment is sent to a 'Staging' server</h2></div></section><section class="slide"><h2>production:</h2><div class="fragment"><li>master branch</li><li>tests must pass</li><li>no code is directly merged</li><li>'stable'</li><br/></div><div class="fragment"><h2>Deployment is sent to the main production server</h2></div></section><section class="slide"><h2>staging vs production servers</h2><div class="fragment"><h3>staging:</h3><li>alpha/beta testing</li><li>seperate server</li><li>seperate domain (subdomain usually)</li><li>limited access</li><br/><div class="fragment"><h2>Break code here</h2></div></div></section><section class="slide"><h2>staging vs production servers</h2><div class="fragment"><h3>production</h3><li>main larger server</li><li>all code must be previously tested on staging</li><div class="fragment"><h2>Do Not break code here!</h2></div></div></section><section class="slide"><h2>Deploying</h2><div class="fragment"><h3>Old methods:</h3><div class="fragment">FTP / SFTP</div><div class="fragment">SSH / SCP</div><div class="fragment">wget</div></div><br/><div class="fragment"><h3>git method:</h3><div class="fragment">SSH to the server. cd to the folder. Run git pull. Restart the app.</div></div></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/deploying_systems/tape.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/deploying_systems/tape.gif" class="slide"><h2>Automate it!</h2><div class="fragment"><h2>git hooks / webhooks</h2></div></section><section class="slide"><h2>A git webhook is a listener on github which calls an action when a git event occurs.</h2></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/deploying_systems/meh.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/deploying_systems/meh.gif" class="slide"><div class="fragment"><h3>When you push code up, it sends a post request to a defined domain.</h3></div></section><section class="slide"><img src="assets/deploying_systems/sc1.png"/></section><section class="slide"><h2>Great!<div class="fragment">Now what?</div></h2></section><section class="slide"><h2>Create a js git hook</h2><div class="fragment"><p>You can also use a few node modules for this task.</p><p>One of them is<a href="https://www.npmjs.org/package/gith"> Gith</a></p></div></section><section class="slide"><h3>Pure js git hook listener</h3><pre><code data-trim="true">var http = require('http');
+var querystring = require('querystring');
+var exec = require('child_process').exec;
+
+var config = {
+  port: 3000,
+  repo: 'git@github.com:stevelacy/git-hook2.git'
+};
+
+
+var start = function() {
+  var cmd = 'pm2 restart 0';
+  exec(cmd, function(err, stdout, stderr){
+    console.log(err, stdout, stderr);
+  });
+};
+
+
+var server = http.createServer(function(req, res) {
+  var data = '';
+  if (req.method === 'POST') {
+    req.on('data', function(chunk) {
+      data += chunk;
+    });
+  }
+
+  req.on('end', function() {
+    if (/^payload=/.test(data)) {
+      var payload = JSON.parse(querystring.unescape(data.slice(8)));
+      if (payload.repository && payload.repository.ssh_url) {
+        if (payload.repository.ssh_url == config.repo){
+          var cmd = 'git pull origin master';
+          exec(cmd, function(err, stdout, stderr){
+            console.log(err, stdout, stderr);
+            start();
+          });
+        }
+      }
+
+      res.writeHead(200, {
+        'Content-type': 'text/html'
+      });
+      return res.end();
+    }
+    res.writeHead(401, {
+      'Content-type': 'text/html'
+    });
+    return res.end();
+  });
+
+});
+
+server.listen(config.port);
+</code></pre><a href="https://github.com/stevelacy/git-hook2">github.com/stevelacy/git-hook2</a></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/deploying_systems/clouds.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/deploying_systems/clouds.gif" class="slide"><div class="todo-list"><ol><h2>--- So far:</h2><div class="fragment"><li>dev / production</li></div><div class="fragment"><li>staging / production</li></div><div class="fragment"><li>automate build deployments</li></div><div class="fragment"><li>create a git hook</li></div></ol></div></section><section class="slide"><h2>There are excellent hosting services which do all the deploying for you.</h2><div class="fragment"><h2><a href="https://modulus.io/">Modulus.io</a><br/><a href="https://www.heroku.com/">Heroku.com</a></h2></div></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/deploying_systems/wat.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/deploying_systems/wat.gif" class="slide"></section><section class="slide"><h1>Logging</h1></section><section class="slide">Logging is the term used to get a list of all the weird stuff users do.<br/><br/><div class="fragment">Logging is the term used to get a list of all the bad code you wrote.</div></section><section class="slide"><h2>Top two node.js logging choices:</h2><div class="fragment"><h3><a href="https://github.com/trentm/node-bunyan">Bunyan</a><br/><a href="https://github.com/flatiron/winston">Winston</a></h3></div></section><section class="slide"><h3>Log ALL events</h3><div class="fragment"><li>Every Request</li><li>Application Errors</li><li>Uncaught Exceptions</li><li>Process Metrics</li><li>Memory Usage</li><li>Heap Size</li><li>Uptime</li><li>Event Loop lag</li></div></section><section class="slide"><h3>Example Bunyan log:</h3><pre><code data-trim="true">{"name":"myapp","hostname":"banana.local","pid":40161,"level":30,"msg":"hi","time":"2013-01-04T18:46:23.851Z","v":0}
+{"name":"myapp","hostname":"myhost","pid":34572,"level":30,"msg":"done","time":"2013-01-04T07:47:25.816Z","v":0}
+{"name":"myserver","hostname":"banana.local","pid":123,"req":{"method":"GET","url":"/path?q=1#anchor","headers":{"x-hi":"Mom","connection":"close"}},"level":3,"msg":"start request","time":"2012-02-03T19:02:46.178Z","v":0}</code></pre><pre><code data-trim="true">{
+  "name": "myserver",
+  "hostname": "banana.local",
+  "pid": 123,
+  "req": {
+    "method": "GET",
+    "url": "/path?q=1#anchor",
+    "headers": {
+      "x-hi": "welcome",
+      "connection": "close"
+    },
+    "remoteAddress": "120.0.0.1",
+    "remotePort": 51244
+  },
+  "level": 3,
+  "msg": "start request",
+  "time": "2012-02-03T19:02:57.534Z",
+  "v": 0
+}</code></pre></section><section class="slide"><h2>Bunyan setup</h2><h3>Create a logger and attach your Process stream.</h3><pre><code data-trim="true">var bunyan = require('bunyan');
+var elasticsearch = require('bunyan-elasticsearch');
+
+var logger = bunyan.createLogger({
+  name: 'My Application',
+  streams: [
+    { stream: process.stdout },
+    { stream: new Elasticsearch() },
+    { path: '/var/log/myapp-error.log' }
+  ],
+  serializers: bunyan.stdSerializers
+});
+
+logger.info('Starting application on port %d', app.get('port'));</code></pre></section><section class="slide"><h3>So, I have a database of logs, how do I view them?</h3><div class="fragment"><h2><a href="https://github.com/elasticsearch/kibana">Kibana</a></h2></div></section><section class="slide"><h3>Process Metrics</h3><img src="assets/deploying_systems/process-metrics.png"/></section><section class="slide"><h3>Requests</h3><img src="assets/deploying_systems/requests.png"/></section><section class="slide"><h3>You can now see when an error is caused, and what caused it.<br/></h3><div class="fragment">Letting you create applications and not do DevOps.</div></section><section class="slide"><h1>Great!</h1><div class="fragment">But what about monitoring?</div></section><section class="slide"><h2>New Relic</h2><h2>DataDog</h2><h2>AppDynamics</h2></section><section class="slide"><h2>New Relic demo</h2></section><script type="text/javascript">var img = new Image();
+img.src = 'assets/deploying_systems/lake.gif';
+console.log('preloading', img);
+</script><section data-background-image="assets/deploying_systems/lake.gif" class="slide"><h1>Questions?</h1><br/><br/><br/><br/><a href="http://slacy.me">slacy.me</a></section></div></div><script type="text/javascript" src="lib/js/head.js"></script><script type="text/javascript" src="lib/js/reveal.js"></script><script type="text/javascript" src="lib/main.js"></script></body></html>
